@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tabel Kebenaran & Operator Logika — Kelompok 404 Logic not found</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: rgba(18, 23, 41, 0.6);
+      --accent: #00f5d4;
+      --text-main: #e0e6f1;
+      --text-muted: #828da9;
+      --border: rgba(186, 196, 224, 0.1);
+    }
+    /* Gaya untuk Sidebar Menu */
+    .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; background: #121729; border-right: 1px solid var(--border); transform: translateX(-100%); transition: transform 0.4s ease; z-index: 1000; padding: 24px; overflow-y: auto; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-header h3 { margin: 0; font-size: 24px; color: var(--accent); font-weight: 700; }
+    .sidebar-header p { margin: 4px 0 0; color: var(--text-muted); }
+    .member-list { list-style: none; padding: 0; margin: 0; font-size: 15px; }
+    .member-item { border-bottom: 1px solid var(--border); }
+    .member-name { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; color: var(--text-main); cursor: pointer; }
+    .member-name svg { width: 16px; height: 16px; transition: transform 0.3s ease; }
+    .npm-details { max-height: 0; overflow: hidden; transition: all 0.4s ease-out; color: var(--accent); padding: 0 10px; font-size: 14px; }
+    .member-item.expanded .npm-details { max-height: 50px; padding: 0 10px 12px; }
+    .member-item.expanded .member-name svg { transform: rotate(180deg); }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; z-index: 999; }
+    .overlay.visible { opacity: 1; visibility: visible; }
+    .menu-toggle { position: absolute; top: 20px; left: 20px; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001; }
+    .menu-toggle svg { width: 24px; height: 24px; stroke: var(--text-muted); transition: stroke .2s ease; }
+    .menu-toggle:hover svg { stroke: var(--accent); }
+    @media (min-width: 1100px) {
+      .menu-toggle { left: calc(50% - 550px); /* Align with .wrap container */ }
+    }
+    @keyframes aurora {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    *{box-sizing:border-box;font-family:'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{margin:0;min-height:100vh;color:var(--text-main);background-color:var(--bg);background-image:linear-gradient(125deg, #0d1221, #1a2138 50%, #3b2a4a);background-size: 400% 400%;animation:aurora 20s ease infinite;}
+    header{padding:40px 20px;text-align:center}
+    .wrap{max-width:1100px;margin:0 auto}
+    h1{font-size:36px;margin:0 0 8px;color:var(--accent);letter-spacing:-1px;font-weight:700;text-shadow:0 0 15px rgba(0, 245, 212, 0.3);}
+    h2{font-weight:600;color:var(--text-main);}
+    p.lead{margin:0;color:var(--text-muted);font-size:18px}
+    main{padding:0 20px 40px}
+    .card{background:var(--surface);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:24px;border-radius:16px;margin-bottom:24px;border:1px solid var(--border);transition:all .3s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.2);border-color:rgba(186, 196, 224, 0.2);}
+    label{display:block;margin-top:12px;margin-bottom: 6px; color:var(--text-muted);font-weight:500;font-size:14px;}
+    input[type=text],select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,0.2);color:inherit;font-family:inherit;font-size:16px;transition:all .2s ease}
+    input[type=text]:focus,select:focus{outline:none;border-color:rgba(0, 245, 212, 0.5);box-shadow:0 0 0 4px rgba(0, 245, 212, 0.1)}
+    .ops{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .opbtn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text-muted);transition:all .2s ease}
+    .opbtn:hover{background:rgba(0, 245, 212, 0.1);transform:translateY(-2px);color:var(--accent);border-color:rgba(0, 245, 212, 0.3);}
+    .opbtn.active{background:rgba(0, 245, 212, 0.15);color:var(--accent);border-color:rgba(0, 245, 212, 0.4);}
+    button.btn{padding:12px 18px;border-radius:8px;border:none;background:var(--accent);color:#0a0e1a;cursor:pointer;margin-top:16px;font-weight:600;font-size:16px;transition:all .2s ease}
+    button.btn:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0, 245, 212, 0.25);background: #33ffde;}
+    table{width:100%;border-collapse:collapse;margin-top:16px;}
+    th,td{padding:10px 12px;border:1px solid var(--border);text-align:center}
+    th{background:rgba(0,0,0,0.2);position:sticky;top:0;font-weight:600;color:var(--text-main);}
+    tbody tr{transition: background-color .2s ease;}
+    tbody tr:hover{background:rgba(186, 196, 224, 0.05)}
+    .muted{color:var(--muted)}
+    tr.is-true{background:rgba(0, 245, 212, 0.07)}
+    tr.is-true:hover{background:rgba(0, 245, 212, 0.12)}
+    @media (max-width:800px){.wrap{padding:0 12px}}
+
+    /* Gaya untuk bagian yang bisa diperluas */
+    .card.expandable { cursor: pointer; position: relative; }
+    .card.expandable::after { content: '+'; position: absolute; top: 20px; right: 24px; font-size: 32px; line-height: 1; color: var(--text-muted); transition: transform 0.3s ease; }
+    .card.expandable.expanded::after { transform: rotate(45deg); }
+    .details-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, margin-top 0.5s ease-out, padding-top 0.5s ease-out; border-top: 1px solid var(--border); margin-top: 0; padding-top: 0; }
+    .card.expandable.expanded .details-content { max-height: 1000px; /* Nilai yang cukup besar */ transition: max-height 0.7s ease-in-out; margin-top: 20px; padding-top: 20px; }
+    .op-list dt { font-weight: 600; color: var(--accent); } .op-list dd { margin-left: 20px; margin-bottom: 12px; color: var(--text-muted); }
+  </style>
+  <style>
+    /* Gaya untuk Tombol Bantuan dan Modal */
+    .help-toggle { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001; }
+    .help-toggle svg { width: 24px; height: 24px; stroke: var(--text-muted); transition: stroke .2s ease; }
+    .help-toggle:hover svg { stroke: var(--accent); }
+    @media (min-width: 1100px) {
+      .help-toggle { right: calc(50% - 550px); /* Sejajarkan dengan container .wrap */ }
+    }
+
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; }
+    .modal-overlay.visible { opacity: 1; visibility: visible; }
+    .modal-content { background: var(--surface); padding: 24px 32px; border-radius: 16px; border: 1px solid var(--border); max-width: 500px; width: 90%; position: relative; transform: scale(0.95); transition: transform 0.3s ease; max-height: 85vh; overflow-y: auto; }
+    .modal-overlay.visible .modal-content { transform: scale(1); }
+    .modal-content h2 { margin-top: 0; color: var(--accent); }
+    .modal-content ol { padding-left: 20px; color: var(--text-muted); line-height: 1.8; }
+    .modal-content li { margin-bottom: 10px; }
+    .modal-close { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 28px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 5px; transition: color .2s ease; }
+    .modal-close:hover { color: var(--text-main); }
+  </style>
+</head>
+<body>
+  <div id="sidebar" class="sidebar"> <!-- This ID seems unused and duplicated, but we'll leave it for now to avoid breaking changes -->
+    <div class="sidebar-header">
+      <h3>404</h3>
+      <p>Logic Not Found</p>
+    </div>
+    <ul class="member-list">
+      <!-- Member items here -->
+      <li class="member-item">
+        <div class="member-name"><span>Muhammad Akbar Ridho Riyoyo</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg></div>
+        <div class="npm-details">NPM: 25312041</div>
+      </li>
+      <li class="member-item">
+        <div class="member-name"><span>Eko Wahyu Hernanto</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg></div>
+        <div class="npm-details">NPM: 25312022</div>
+      </li>
+      <li class="member-item">
+        <div class="member-name"><span>Muhammad Deka Ariyen</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg></div>
+        <div class="npm-details">NPM: 25312034</div>
+      </li>
+      <li class="member-item">
+        <div class="member-name"><span>Tegar Pratama</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg></div>
+        <div class="npm-details">NPM: 25312062</div>
+      </li>
+    </ul>
+  </div>
+  <div id="overlay" class="overlay"></div>
+
+  <header>
+    <button id="menu-toggle" class="menu-toggle" aria-label="Buka Menu">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+    <button id="help-toggle" class="help-toggle" aria-label="Buka Bantuan">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+      </svg>
+    </button>
+    <div class="wrap">
+      <h1>Tabel Kebenaran & Operator Logika</h1>
+      <p class="lead">Kelompok <strong>404 Logic not found</strong> — interaktif, aman, dan bebas error.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card expandable" id="explanationCard">
+      <h2>Apa itu Tabel Kebenaran?</h2>
+      <p class="muted">Tabel kebenaran menampilkan semua kombinasi input variabel proposisional dan hasil evaluasi sebuah ekspresi logika.</p>
+      <div class="details-content">
+        <p>Secara formal, tabel kebenaran adalah alat matematis yang digunakan dalam logika untuk menentukan nilai kebenaran dari sebuah proposisi majemuk berdasarkan semua kemungkinan nilai kebenaran dari proposisi-proposisi penyusunnya. Setiap baris pada tabel mewakili satu kemungkinan kombinasi (disebut interpretasi), dan kolom terakhir menunjukkan hasil dari ekspresi logika untuk interpretasi tersebut.</p>
+        <h3>Operator Logika</h3>
+        <p>Berikut adalah operator yang didukung oleh aplikasi ini:</p>
+        <dl class="op-list">
+          <dt>¬ (Negasi / NOT)</dt>
+          <dd>Membalik nilai kebenaran. Jika proposisi A bernilai Benar (T), maka ¬A bernilai Salah (F), dan sebaliknya.</dd>
+          <dt>∧ (Konjungsi / AND)</dt>
+          <dd>Bernilai Benar (T) hanya jika kedua proposisi bernilai Benar (T).</dd>
+          <dt>∨ (Disjungsi / OR)</dt>
+          <dd>Bernilai Benar (T) jika salah satu atau kedua proposisi bernilai Benar (T).</dd>
+          <dt>⊕ (Disjungsi Eksklusif / XOR)</dt>
+          <dd>Bernilai Benar (T) jika hanya salah satu dari kedua proposisi yang bernilai Benar (T), tetapi tidak keduanya.</dd>
+          <dt>→ (Implikasi / IMPLIES)</dt>
+          <dd>Bernilai Salah (F) hanya jika proposisi pertama (anteseden) bernilai Benar (T) dan proposisi kedua (konsekuen) bernilai Salah (F).</dd>
+          <dt>↔ (Bi-implikasi / IFF)</dt>
+          <dd>Bernilai Benar (T) hanya jika kedua proposisi memiliki nilai kebenaran yang sama (keduanya T atau keduanya F).</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Pengaturan</h2>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <label for="varCount">Jumlah Variabel (1 - 6)</label>
+          <select id="varCount">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+
+          <label style="margin-top:12px">Pilih Operator (klik untuk isi otomatis & generate)</label>
+          <div class="ops" id="opList">
+            <button class="opbtn" data-op="¬A">NOT</button>
+            <button class="opbtn active" data-op="A ∧ B">AND</button>
+            <button class="opbtn" data-op="A ∨ B">OR</button>
+            <button class="opbtn" data-op="A ⊕ B">XOR</button>
+            <button class="opbtn" data-op="A → B">IMPLIES</button>
+            <button class="opbtn" data-op="A ↔ B">IFF</button>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:260px">
+          <label for="expr">Ekspresi Logika</label>
+          <input id="expr" type="text" placeholder="Ketik ekspresi Anda di sini, misal: A ∧ (B ∨ C)" />
+
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="generateBtn">Buat Tabel</button>
+            <button class="btn" id="downloadCsvBtn">Download CSV</button>
+            <button class="btn" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="muted" style="margin-top:8px;font-size:13px">Gunakan variabel huruf besar A..F. Operator diterima: ¬ ∧ ∨ ⊕ → ↔ atau kata NOT, AND, OR, XOR, IMPLIES, IFF.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Output</h2>
+      <div id="output" class="muted">Belum ada tabel. Klik Generate atau pilih operator.</div>
+    </section>
+
+  </main>
+
+  <!-- Modal Bantuan -->
+  <div id="help-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close" aria-label="Tutup Bantuan">&times;</button>
+      <h2>Cara Penggunaan Aplikasi</h2>
+      <div style="line-height: 1.7;">
+        <h4 style="color: var(--text-main); margin-bottom: 5px;">1. Tentukan Jumlah Variabel</h4>
+        <p style="margin-top: 0; font-size: 14px;">Pilih jumlah variabel (misal: A, B, C) yang akan Anda gunakan pada menu dropdown "Jumlah Variabel". Ini akan menentukan jumlah baris pada tabel kebenaran.</p>
+
+        <h4 style="color: var(--text-main); margin-bottom: 5px;">2. Ketik Ekspresi Logika</h4>
+        <p style="margin-top: 0; font-size: 14px;">Pada kolom "Ekspresi Logika", masukkan formula yang ingin dievaluasi. Gunakan huruf besar untuk variabel (A-F) dan manfaatkan tanda kurung `()` untuk prioritas operasi. Contoh: `(A ∧ B) → C`.</p>
+
+        <h4 style="color: var(--text-main); margin-bottom: 5px;">3. Gunakan Tombol Operator (Opsional)</h4>
+        <p style="margin-top: 0; font-size: 14px;">Untuk mempercepat penulisan, klik tombol operator (NOT, AND, OR, dll.) untuk menyisipkan simbolnya secara otomatis ke dalam kolom ekspresi.</p>
+
+        <h4 style="color: var(--text-main); margin-bottom: 5px;">4. Buat Tabel</h4>
+        <p style="margin-top: 0; font-size: 14px;">Klik tombol <strong>"Buat Tabel"</strong>. Hasilnya akan langsung muncul di bagian "Output", lengkap dengan langkah-langkah perhitungannya jika ekspresi cukup kompleks.</p>
+
+        <h4 style="color: var(--text-main); margin-bottom: 5px;">Fitur Lainnya</h4>
+        <p style="margin-top: 0; font-size: 14px;">Gunakan tombol <strong>"Download CSV"</strong> untuk menyimpan tabel, dan <strong>"Reset"</strong> untuk mengosongkan semua input.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    // --- Logika Preloader untuk durasi 4 detik ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const loader = document.getElementById('loader');
+      const startButton = document.getElementById('startButton');
+      let timerFinished = false;
+
+      setTimeout(() => {
+        timerFinished = true;
+        startButton.disabled = false;
+        startButton.textContent = 'Mulai';
+      }, 4000); // 4000 milidetik = 4 detik
+
+      startButton.addEventListener('click', () => loader.classList.add('hidden'));
+    });
+
+    // --- Parsing & Evaluation (shunting-yard + RPN evaluator) ---
+    const precedence = {'¬':5,'∧':4,'∨':3,'⊕':3,'→':2,'↔':1};
+    const arity = {'¬':1,'∧':2,'∨':2,'⊕':2,'→':2,'↔':2};
+
+    function normalizeExpr(s){
+      if(!s) return '';
+      s = s.toUpperCase();
+      // replace word operators with symbols
+      s = s.replace(/NOT/g,'¬').replace(/AND/g,'∧').replace(/OR\b/g,'∨').replace(/XOR/g,'⊕').replace(/IMPLIES/g,'→').replace(/IFF/g,'↔');
+      // ensure spacing around tokens
+      s = s.replace(/([¬∧∨⊕→↔()])/g,' $1 ');
+      s = s.replace(/\s+/g,' ').trim();
+      return s;
+    }
+
+    function tokenize(s){
+      s = normalizeExpr(s);
+      if(!s) return [];
+      return s.split(' ').filter(Boolean);
+    }
+
+    function varsInTokens(tokens){
+      const set = new Set();
+      for(const t of tokens){
+        if(/^[A-Z]$/.test(t)) set.add(t);
+      }
+      return Array.from(set).sort();
+    }
+
+    function toRPN(tokens){
+      const out=[]; const ops=[];
+      for(const t of tokens){
+        if(/^[A-Z]$/.test(t)) out.push(t);
+        else if(t==='(') ops.push(t);
+        else if(t===')'){
+          while(ops.length && ops[ops.length-1] !== '(') out.push(ops.pop());
+          if(ops.length && ops[ops.length-1] === '(') ops.pop();
+          else return null; // mismatched parentheses
+        } else if(t in precedence){
+          while(ops.length && ops[ops.length-1] !== '(' && ((precedence[ops[ops.length-1]] > precedence[t]) || (precedence[ops[ops.length-1]] === precedence[t] && arity[t]===2))){
+            out.push(ops.pop());
+          }
+          ops.push(t);
+        } else {
+          return null; // unknown token
+        }
+      }
+      while(ops.length){
+        const op = ops.pop();
+        if(op==='(' || op===')') return null;
+        out.push(op);
+      }
+      return out;
+    }
+
+    function evalRPN(rpn, assign){
+      const st=[];
+      for(const t of rpn){
+        if(/^[A-Z]$/.test(t)) st.push(Boolean(assign[t]));
+        else if(t==='¬'){
+          const a = st.pop(); st.push(!a);
+        } else {
+          const b = st.pop(); const a = st.pop();
+          if(t==='∧') st.push(Boolean(a && b));
+          else if(t==='∨') st.push(Boolean(a || b));
+          else if(t==='⊕') st.push(Boolean( (a && !b) || (!a && b) ));
+          else if(t==='→') st.push(Boolean( (!a) || b ));
+          else if(t==='↔') st.push(Boolean( a === b ));
+          else throw new Error('Unknown operator in eval: ' + t);
+        }
+      }
+      return Boolean(st.pop());
+    }
+
+    // --- Fungsi baru untuk evaluasi bertahap ---
+
+    // Mengidentifikasi semua sub-ekspresi dari RPN
+    function getSubExpressions(rpn) {
+      const stack = [];
+      const subExprs = new Set();
+      for (const token of rpn) {
+        if (/^[A-Z]$/.test(token)) {
+          stack.push(token);
+        } else if (token in arity) {
+          const numArgs = arity[token];
+          if (stack.length < numArgs) continue; // Skip malformed
+          const args = [];
+          for (let i = 0; i < numArgs; i++) args.unshift(stack.pop());
+          
+          let subExpr;
+          if (numArgs === 1) {
+            subExpr = `${token}${args[0]}`;
+          } else {
+            // Pastikan argumen dalam kurung jika mereka sendiri adalah ekspresi
+            const arg1 = args[0].length > 1 ? `(${args[0]})` : args[0];
+            const arg2 = args[1].length > 1 ? `(${args[1]})` : args[1];
+            subExpr = `${arg1} ${token} ${arg2}`;
+          }
+          stack.push(subExpr);
+          subExprs.add(subExpr);
+        }
+      }
+      // Hapus ekspresi penuh (yang terakhir di stack) dari set sub-ekspresi
+      if (stack.length === 1) subExprs.delete(stack[0]);
+      return Array.from(subExprs);
+    }
+
+    // Mengevaluasi ekspresi dan semua sub-ekspresinya
+    function evalAllSteps(subExpressions, fullRpn, assignments) {
+      const results = {};
+      // Evaluasi setiap sub-ekspresi
+      for (const sub of subExpressions) {
+        const subRpn = toRPN(tokenize(sub));
+        if (subRpn) results[sub] = evalRPN(subRpn, assignments);
+      }
+      // Evaluasi hasil akhir
+      results['final'] = evalRPN(fullRpn, assignments);
+      return results;
+    }
+
+    // --- UI wiring ---
+    const varCountEl = document.getElementById('varCount');
+    const exprEl = document.getElementById('expr');
+    const opButtons = document.querySelectorAll('.opbtn');
+    const outputEl = document.getElementById('output');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Fungsi untuk menyisipkan teks di posisi kursor
+    function insertAtCursor(myField, myValue) {
+        if (document.selection) { // IE
+            myField.focus();
+            document.selection.createRange().text = myValue;
+        } else if (myField.selectionStart || myField.selectionStart == '0') { // Modern browsers
+            var startPos = myField.selectionStart;
+            var endPos = myField.selectionEnd;
+            myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+            myField.selectionStart = myField.selectionEnd = startPos + myValue.length;
+        } else {
+            myField.value += myValue;
+        }
+    }
+
+    opButtons.forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const symbol = b.dataset.op.replace(/[A-Z\s]/g, ''); // Ekstrak simbol dari data-op
+        insertAtCursor(exprEl, symbol);
+        exprEl.focus();
+      });
+    });
+
+    // generate button
+    generateBtn.addEventListener('click', generateTruthTable);
+    resetBtn.addEventListener('click', ()=>{
+      varCountEl.value = 2; exprEl.value = '';
+      opButtons.forEach(x=>x.classList.remove('active'));
+      document.querySelector('.opbtn[data-op="A ∧ B"]').classList.add('active');
+      outputEl.innerHTML = '<div class="muted">Belum ada tabel. Klik Generate atau pilih operator.</div>';
+    });
+
+    downloadCsvBtn.addEventListener('click', ()=>{
+      const csv = downloadCsvBtn.dataset.csv;
+      if(!csv){ alert('Tidak ada tabel untuk di-download.'); return; }
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'tabel_kebenaran.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    function generateTruthTable(){
+      const rawExpr = (exprEl.value || '').trim();
+      if(!rawExpr){ outputEl.innerHTML = '<div class="muted">Masukkan ekspresi atau pilih operator.</div>'; return; }
+
+      const tokens = tokenize(rawExpr);
+      if(tokens.length===0){ outputEl.innerHTML = '<div class="muted">Ekspresi tidak valid.</div>'; return; }
+
+      const usedVars = varsInTokens(tokens);
+      if(usedVars.length>0){
+        const selectedMaxVars = Math.max(1, Math.min(6, parseInt(varCountEl.value)||2));
+        if(usedVars.length > selectedMaxVars){
+          outputEl.innerHTML = `<div class="muted">Ekspresi menggunakan ${usedVars.length} variabel unik (${usedVars.join(', ')}), tetapi "Jumlah Variabel" dibatasi hingga ${selectedMaxVars}.</div>`;
+          return;
+        }
+      }
+
+      const displayVars = usedVars; // Variabel di tabel adalah variabel yang digunakan
+      const numDisplayVars = displayVars.length;
+      if (numDisplayVars === 0 && rawExpr) { // Ada ekspresi tapi tidak ada variabel (misal: "T AND F")
+          outputEl.innerHTML = '<div class="muted">Ekspresi tidak mengandung variabel.</div>';
+          return;
+      }
+
+      const rpn = toRPN(tokens);
+      if(!rpn){ outputEl.innerHTML = '<div class="muted">Ekspresi tidak valid (cek tanda kurung atau simbol).</div>'; return; }
+
+      const operatorCount = rpn.filter(t => t in arity).length;
+      const isDetailedMode = numDisplayVars >= 3 && operatorCount > 1;
+      
+      let subExpressions = [];
+      if (isDetailedMode) {
+        subExpressions = getSubExpressions(rpn);
+      }
+
+      const rows = 1 << numDisplayVars;
+      // build table header
+      const headers = [...displayVars];
+      if (isDetailedMode) {
+        headers.push(...subExpressions);
+      }
+      headers.push(rawExpr);
+
+      let html = '<div style="overflow:auto"><table><thead><tr>' + headers.map(h => `<th>${escapeHtml(h)}</th>`).join('') + '</tr></thead><tbody>';
+      const csvLines = [];
+      csvLines.push(headers.map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+
+      for(let i=0;i<rows;i++){
+        const assign = {};
+        for(let j=0;j<numDisplayVars;j++) assign[displayVars[j]] = !!( (i >> (numDisplayVars-1-j)) & 1 );
+
+        const toTF = (v) => v ? 'T' : 'F';
+        const rowValues = [];
+        displayVars.forEach(v => rowValues.push(toTF(assign[v])));
+
+        try {
+          const allResults = evalAllSteps(subExpressions, rpn, assign);
+          if (isDetailedMode) {
+            subExpressions.forEach(sub => rowValues.push(toTF(allResults[sub])));
+          }
+          rowValues.push(toTF(allResults['final']));
+        } catch(e) { outputEl.innerHTML = '<div class="muted">Gagal evaluasi ekspresi: '+e.message+'</div>'; return; }
+        
+        const isTrueRow = rowValues[rowValues.length - 1] === 'T';
+        html += `<tr ${isTrueRow ? 'class="is-true"' : ''}>` + rowValues.map((val, idx) => `<td ${idx === rowValues.length - 1 ? 'style="font-weight:700"' : ''}>${val}</td>`).join('') + '</tr>';
+        csvLines.push(rowValues.join(','));
+      }
+      html += '</tbody></table></div>';
+      outputEl.innerHTML = html;
+      downloadCsvBtn.dataset.csv = csvLines.join('\n');
+    }
+
+    function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // initial state: tandai operator default tapi jangan generate tabel
+    document.querySelector('.opbtn[data-op="A ∧ B"]').classList.add('active');
+    // Hapus baris di bawah ini agar tidak otomatis mengisi dan generate tabel
+    // exprEl.value = document.querySelector('.opbtn[data-op="A ∧ B"]').dataset.op || 'A ∧ B';
+    // generateTruthTable();
+
+    // Logika untuk kartu penjelasan yang bisa diperluas
+    const explanationCard = document.getElementById('explanationCard');
+    explanationCard.addEventListener('click', () => {
+      explanationCard.classList.toggle('expanded');
+    });
+
+    // Logika untuk sidebar menu
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    function toggleMenu() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('visible');
+    }
+
+    menuToggle.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+
+    // Logika untuk daftar anggota yang bisa diperluas
+    const memberItems = document.querySelectorAll('.member-item');
+    memberItems.forEach(item => {
+      const name = item.querySelector('.member-name');
+      name.addEventListener('click', () => item.classList.toggle('expanded'));
+    });
+
+    // Logika untuk modal bantuan
+    const helpToggle = document.getElementById('help-toggle');
+    const helpModal = document.getElementById('help-modal');
+    const modalClose = document.getElementById('modal-close');
+
+    function toggleHelpModal() {
+      helpModal.classList.toggle('visible');
+    }
+
+    helpToggle.addEventListener('click', toggleHelpModal);
+    modalClose.addEventListener('click', toggleHelpModal);
+    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) toggleHelpModal(); }); // Tutup jika klik di luar konten
+  </script>
+</body>
+</html>
